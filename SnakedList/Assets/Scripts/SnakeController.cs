@@ -13,6 +13,9 @@ public class SnakeController : MonoBehaviour
     [SerializeField] private int framesToSkip = 5;
     [SerializeField] private GameObject explosionEffect;
 
+    // Tiles occupied by snaked
+    public static List<Vector2Int> OccupiedTiles = new List<Vector2Int>();
+
     private int skippedFrames = 0;
 
     private LinkedList<bodyPart> body;
@@ -64,13 +67,39 @@ public class SnakeController : MonoBehaviour
 
     private void move()
     {
+        OccupiedTiles.Clear();
         LinkedList<bodyPart> temp = body;
         // Move
         while (true)
         {
             if (temp.next == null) break;
             temp.next.data.Part.transform.position = temp.next.data.GoalPos;
+            findTileInGrid(temp);
             temp = temp.next;
+        }
+
+        void findTileInGrid(LinkedList<bodyPart> current)
+        {
+            Vector3[,] grid = GridController.Grid;
+            Vector3Int pos = new Vector3Int();
+            pos.x = (int)current.next.data.Part.transform.position.x;
+            pos.z = (int)current.next.data.Part.transform.position.z;
+
+            for (int  x = 0; x  < grid.GetLength(0); x++)
+            {
+                for (int y = 0; y < grid.GetLength(1); y++)
+                {
+                    Vector3Int currentTile = new Vector3Int();
+                    currentTile.x = (int)grid[x, y].x;
+                    currentTile.z = (int)grid[x, y].z;
+
+                    if (pos.x == currentTile.x && pos.z == currentTile.z)
+                    {
+                        OccupiedTiles.Add(new Vector2Int(x,y));
+                        return;
+                    }
+                }
+            }
         }
     }
     #endregion
@@ -136,7 +165,7 @@ public class SnakeController : MonoBehaviour
         }
         
         int splitPos = Random.Range(2, body.length - 3) - 1;
-        print(splitPos);
+
         for (int i = 0; i < splitPos; i++)
         {
             body.DeletLast();
