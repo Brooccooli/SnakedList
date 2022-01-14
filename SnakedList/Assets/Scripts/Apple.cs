@@ -18,9 +18,9 @@ public class Apple : Pickups
             other.gameObject.GetComponentInParent<SnakeController>().Grow();
             Move();
         }
-        else if (other.gameObject.tag == "Snake")
+        /*else if (other.gameObject.tag == "Snake")
         {
             Move();
-        }
+        }*/
     }
 }

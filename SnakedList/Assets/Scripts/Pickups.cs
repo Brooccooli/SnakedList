@@ -6,38 +6,39 @@ public class Pickups : MonoBehaviour
 {
     public void Move()
     {
+        List<Vector2Int> tiles = clearOccupiedTiles();
         Vector3[,] grid = GridController.Grid;
-        Vector2Int newPos = new Vector2Int(Random.Range(1, grid.GetLength(0) - 1),
-            Random.Range(1, grid.GetLength(1) - 1));
-        transform.position = new Vector3(grid[newPos.x, newPos.y].x, 1, grid[newPos.x, newPos.y].z);
+        int i = Random.Range(0, tiles.Count);
+        transform.position = new Vector3(grid[tiles[i].x, tiles[i].y].x, 1, grid[tiles[i].x, tiles[i].y].z);
     }
 
-    private Vector3[,] clearOccupiedTiles()
+    private List<Vector2Int> clearOccupiedTiles()
     {
-        Vector3[,] grid = GridController.Grid;
-        for (int x = GridController.Grid.GetLength(0) - 1; x >= 0; x--)
+        List<Vector2Int> avaliableTiles = gridToList();
+        for (int i = avaliableTiles.Count - 1; i >= 0; i--)
         {
-            for (int y = GridController.Grid.GetLength(1) - 1; y >= 0; y--)
+            if (checkIfOccupied(avaliableTiles[i]))
             {
-                if(checkIfOccupied(new Vector2Int(x, y)))
-                {
-                    // take away the position in the grid
-                    //grid.
-                }
+                avaliableTiles.RemoveAt(i);
             }
         }
 
-        /*Vector3[,] removeAt(Vector3[,] currGrid, Vector2Int index)
-        {
-            Vector3[,] newGrid = new Vector3[currGrid.GetLength(0), currGrid.GetLength(1)];
-            for (int x = 0; x < currGrid.GetLength(0); x++)
-            {
-                for (int y = 0; y < currGrid.GetLength(1); y++)
-                {
+        return avaliableTiles;
 
+        List<Vector2Int> gridToList()
+        {
+            List<Vector2Int> posList = new List<Vector2Int>();
+            Vector3[,] grid = GridController.Grid;
+            for (int x = 1; x < grid.GetLength(0) - 1; x++)
+            {
+                for (int y = 1; y < grid.GetLength(1) - 1; y++)
+                {
+                    posList.Add(new Vector2Int(x, y));
                 }
             }
-        }*/
+
+            return posList;
+        }
 
         bool checkIfOccupied(Vector2Int index)
         {

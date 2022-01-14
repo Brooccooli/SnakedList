@@ -25,10 +25,10 @@ public class Bomb : Pickups
             // Move away from frame, unobtainable for snake
             transform.position = new Vector3(100, 100, 100);
         }
-        else if (other.gameObject.tag == "Snake")
+        /*else if (other.gameObject.tag == "Snake")
         {
             Move();
-        }
+        }*/
     }
 
     void FixedUpdate()
